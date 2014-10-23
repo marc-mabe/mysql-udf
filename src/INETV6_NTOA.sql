@@ -1,0 +1,18 @@
+DELIMITER $$
+
+DROP FUNCTION IF EXISTS `INETV6_NTOA`$$
+
+CREATE DEFINER=`cpc_tool`@`%` FUNCTION `INETV6_NTOA`(addr TEXT CHARSET BINARY) RETURNS TEXT CHARSET latin1
+    DETERMINISTIC
+BEGIN
+    CASE LENGTH(addr)
+        WHEN 4 THEN
+            RETURN INET_NTOA(CONV(HEX(addr), 16, 10));
+        WHEN 16 THEN
+            RETURN INSERT(INSERT(INSERT(INSERT(INSERT(INSERT(INSERT(HEX(addr), 5, 0, ":"), 10, 0, ":"), 15, 0, ":"), 20, 0, ":"), 25, 0, ":"), 30, 0, ":"), 35, 0, ":");
+        ELSE 
+        RETURN NULL;
+    END CASE;
+END$$
+
+DELIMITER ;
